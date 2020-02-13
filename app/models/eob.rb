@@ -43,8 +43,8 @@ class EOB < Resource
       }
       encounter = ["none"] unless encounter.length > 0 
       observations = item.encounter.map {|enc|
-         reference = enc.reference.gsub("urn:uuid:","");
-         observations = fhir_observations.select { |obs| obs.encounter.reference.gsub("urn:uuid:","") == reference}
+         id = enc.id;
+         observations = fhir_observations.select { |obs| obs.encounter.reference.gsub("urn:uuid:","") == id}
          observations_extract = observations.map{ | obs |
           obscategory = obs.category.map(&:coding)[0].map(&:display).join(",")
 
@@ -62,7 +62,7 @@ class EOB < Resource
           value = obs.valueString if obs.valueString 
           value = obs.valueTime if obs.valueTime       
           {
-            :reference => reference, 
+            :id => id, 
             :category => obscategory,
             :code => code,
             :value => value
